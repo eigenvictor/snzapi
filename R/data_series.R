@@ -28,7 +28,7 @@ get_all_data_series <- function(){
   rsdmxAgent <- paste("rsdmx/", as.character(packageVersion("rsdmx")),
                       sep = "")
 
-  requestParams <- SDMXRequestParams(
+  requestParams <- rsdmx::SDMXRequestParams(
     regUrl = provider@builder@regUrl,
     repoUrl = provider@builder@repoUrl, accessKey = NULL,
     providerId = "STATSNZ", agencyId = "STATSNZ", resource = "dataflow",
