@@ -124,9 +124,9 @@ add_filter <- function(conn, var, values) {
 
   current_filters <- conn@filters
 
-  if(current_filters[[var]] != "") {
+  if(length(current_filters[[var]]) > 1 | current_filters[[var]][[1]] != "") {
     current_var_filter <- current_filters[[var]]
-    warning(sprintf("Overwriting existing filter for %s, previous: %s", var, paste(values)))
+    warning(sprintf("Overwriting existing filter for %s, previous: %s", var, paste(values, collapse = ",")))
   }
 
   current_filters[[var]] <- values
@@ -165,7 +165,7 @@ build_filter_string <- function(conn) {
 #' @returns A data.table object
 #'
 #' @export
-collect.API_conn <- function(conn, add_labels = T, drop_codes = F) {
+collect.API_conn <- function(conn, add_labels = F, drop_codes = F) {
   url <- sprintf(
     "%s/%s?dimensionAtObservation=AllDimensions&format=%s",
     conn@url, build_filter_string(conn), conn@format

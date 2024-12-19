@@ -39,6 +39,7 @@ get_variable_labels(conn, "age")
 conn <- add_filters(conn, sex = c("SEX1", "SEX2"), age = c("AGE1539", "AGE4064"))
 
 data <- collect(conn, add_labels = T, drop_codes = T)
+
 head(data)
 
 ## Authors and acknowledgment
