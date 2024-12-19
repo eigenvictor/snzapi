@@ -4,7 +4,7 @@
 \alias{collect.API_conn}
 \title{Collect data from API}
 \usage{
-\method{collect}{API_conn}(conn, add_labels = T, drop_codes = F)
+\method{collect}{API_conn}(conn, add_labels = F, drop_codes = F)
 }
 \arguments{
 \item{conn}{A connection to the ADE API, obtained from connect_to_ade()}
