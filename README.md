@@ -28,12 +28,15 @@ library(snzapi)
 set_api_key(config::get("stats_nz_key"))
 
 snz_population_table <- search_data_series("population estimates")
+
 snz_population_table
 
 conn <- connect_to_ade("POPES_SUB_004")
 
 get_variables(conn)
+
 get_variable_labels(conn, "sex")
+
 get_variable_labels(conn, "age")
 
 conn <- add_filters(conn, sex = c("SEX1", "SEX2"), age = c("AGE1539", "AGE4064"))
@@ -46,4 +49,5 @@ head(data)
 
 ## Authors and acknowledgment
 Created by Jayden Mudge
+
 Heavily based on the rsdmx package created by Emmanuel Blondel, Matthieu Stigler, and Eric Persson
