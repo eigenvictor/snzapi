@@ -50,7 +50,23 @@ get_ade_metadata <- function(resourceId, version) {
   return(metadata)
 }
 
-#' Get variable code-label pairs
+#' Get series metadata
+#'
+#' Get the name, description, and other info about the series for the connection object
+#'
+#' @param conn A connection to the ADE API, obtained from connect_to_ade()
+#' @examples
+#' conn <- connect_to_ade("POPES_SUB_004")
+#' series_info <- get_series_metadata(conn)
+#' series_info$Name.en
+#' > "STATSNZ Subnational population estimates (RC, SA2), by age and sex, at 30 June 1996-2024 (2024 boundaries)"
+#'
+#' @export
+get_series_metadata <- function(conn) {
+  slot(conn, "metadata")$series
+}
+
+#' Get code-label pairs for all values of a variable
 #'
 #' Get the codes and respective labels for values a variable can take
 #'
@@ -59,13 +75,30 @@ get_ade_metadata <- function(resourceId, version) {
 #' @param conn A connection to the ADE API, obtained from connect_to_ade()
 #' @param variable The name of a variable in the dataset for which the metadata applies
 #' @examples
-#' metadata <- get_ade_metadata("POPES_SUB_004")
-#' age_groups <- get_variable_labels(conn, variable = "AGE_POPES_SUB_004")
+#' conn <- connect_to_ade("POPES_SUB_004")
+#' age_groups <- get_variable_labels(conn, variable = "age")
+#' age_groups <- get_variable_values(conn, variable = "age")
 #'
 #' @export
 get_variable_labels <- function(conn, variable) {
   slot(conn, "metadata")$codelists[[variable]]
 }
+
+#' Get code-label pairs for all values of a variable
+#'
+#' Get the codes and respective labels for values a variable can take
+#'
+#' @returns A data.frame
+#'
+#' @param conn A connection to the ADE API, obtained from connect_to_ade()
+#' @param variable The name of a variable in the dataset for which the metadata applies
+#' @examples
+#' conn <- connect_to_ade("POPES_SUB_004")
+#' age_groups <- get_variable_labels(conn, variable = "age")
+#' age_groups <- get_variable_values(conn, variable = "age")
+#'
+#' @export
+get_variable_values <- get_variable_labels
 
 #' Get variables
 #'

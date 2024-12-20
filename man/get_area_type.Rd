@@ -4,10 +4,19 @@
 \alias{get_area_type}
 \title{Get area type}
 \usage{
-get_area_type(area)
+get_area_type(
+  area_name,
+  area_code = NULL,
+  options = c("SA1", "SA2", "Region", "TA", "LB", "CB", "Subdivision", "DHB",
+    "Constituency", "Ward")
+)
 }
 \arguments{
-\item{area}{a character string containing a label/name for an area concept}
+\item{area_name}{a character string containing a label/name for an area concept}
+
+\item{area_code}{(optional) the numeric code for an area to help improve classification accuracy}
+
+\item{options}{(optional) possible options of types for the area}
 }
 \description{
 Some published series include multiple area types in the same "area" column.
@@ -17,7 +26,8 @@ type manually.
 }
 \details{
 Known issues:
-- Auckland is assigned TA, but is also the name of a DHB
+- If no code is provided, Auckland is assigned TA, although it may be a DHB
+- SA2s need either their code included in the area_name, or need their code provided
 - Totals and areas outside common geographies are often mislabeled
 - Doesn't work for Urban-Rural areas
 }

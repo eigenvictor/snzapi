@@ -40,72 +40,146 @@ clean_ade_names <- function(text, resourceId, var_type = "id") {
 #' type manually.
 #'
 #' Known issues:
-#' - Auckland is assigned TA, but is also the name of a DHB
+#' - If no code is provided, Auckland is assigned TA, although it may be a DHB
+#' - SA2s need either their code included in the area_name, or need their code provided
 #' - Totals and areas outside common geographies are often mislabeled
 #' - Doesn't work for Urban-Rural areas
 #'
-#' @param area a character string containing a label/name for an area concept
+#' @param area_name a character string containing a label/name for an area concept
+#' @param area_code (optional) the numeric code for an area to help improve classification accuracy
+#' @param options (optional) possible options of types for the area
 #' @examples
 #' get_area_type("Gisborne district")
 #' > "TA"
 #'
 #' @export
-get_area_type <- function(area) {
+get_area_type <- function(
+    area_name,
+    area_code = NULL,
+    options = c("SA1", "SA2", "Region", "TA", "LB", "CB",
+                "Subdivision", "DHB", "Constituency", "Ward")
+) {
 
-  .get_area_type <- function(x) {
-    sa1_pattern <- "^\\d{7}$"
-    sa2_pattern <- "^\\d{6}($|\\s)"
-    lb_pattern <- "06\\d{3}($|\\s)"
+  options <- tolower(options)
+  area_name <- tolower(area_name)
 
-    dhbs <- c(
-      "Northland", "Waitemata", "Auckland", "Counties Manukau", "Waikato",
-      "Lakes", "Bay of Plenty", "Tairawhiti", "Taranaki", "Hawke's Bay",
-      "Whanganui", "MidCentral", "Hutt Valley", "Capital and Coast",
-      "Wairarapa", "Nelson Marlborough", "West Coast", "Canterbury",
-      "South Canterbury", "Southern", "2201 Otago constituency", "2202 Southland constituency"
-    )
+  if(is.null(area_code)) area_code <- ""
 
-    type <- if (grepl(sa1_pattern, x)) {
-      "SA1"
-    } else if (grepl(sa2_pattern, x)) {
-      "SA2"
-    } else if (grepl("regio", x)) {
-      "REGC"
-    } else if (grepl("Island(\\s|$)", x)) {
-      "Island"
-    } else if (
-      grepl("district|territorial authority|city|territory", x) &
-      !grepl("Other|Inlets|Inland|health board", x) |
-      x == "Auckland"
-    ) {
-      "TA"
-    } else if (
-      grepl("community|local board area", x) |
-      grepl(lb_pattern, x)
-    ) {
-      "CB/LB"
-    } else if (grepl("subdivis", x)) {
-      "subdivision"
-    } else if (x %in% dhbs | grepl("district health board|DHB", x)) {
-      "DHB"
-    } else if (grepl("constituen", x, ignore.case = T) & !grepl("district health board|DHB", x)) {
-      "constituency"
-    } else if (grepl("ward", x)) {
-      "Ward"
-    } else if(grepl("New Zealand", x)) {
-      "NZ"
-    } else {
-      "Unknown"
-    }
+  .get_area_type <- function(code, name) {
 
-    return(type)
+    matches <- mapply(FUN = .matches_geo, code = code, name = name, geo = options)
+
+    if(sum(matches) > 0) return(options[matches][[1]])
+
+    if (grepl("outside|total", name) & length(options) == 1) return(options)
+    if (grepl("island(\\s|$)", name) | code %in% c("NIRC", "SIRC")) return("Island")
+    if (grepl("new zealand", name)) return("NZ")
+    return("Unknown")
   }
 
-  type <- sapply(X = area, FUN = .get_area_type)
+  code_name_pairs <- data.frame(name = area_name, code = area_code)
 
-  return(type)
+  unique_pairs <- unique(code_name_pairs)
+
+  unique_pairs$type <- mapply(FUN = .get_area_type, code = unique_pairs$code, name = unique_pairs$name)
+
+  code_name_types <- merge(
+    code_name_pairs,
+    unique_pairs,
+    by = c("code", "name")
+  )
+
+  return(code_name_types$type)
 }
 
+.matches_geo <- function(code, name, geo) {
+
+  match_fun_call <- paste0(".matches_", geo, "(code, name)")
+
+  match_fun_eval <- tryCatch(
+    eval(parse(text=match_fun_call)),
+    error = function(e) {stop("Specific geo option not recognised:", geo)}
+  )
+
+  return(match_fun_eval)
+}
+
+#' check if area is an SA2
+#' @export
+.matches_sa2 <- function(code, name){
+  sa2_pattern <- "^\\d{6}($|\\s)"
+  grepl(sa2_pattern, code) & nchar(code) == 6 | grepl(sa2_pattern, name)
+}
+
+#' check if area is an SA1
+#' @export
+.matches_sa1 <- function(code, name){
+  sa1_pattern <- "^\\d{7}$"
+  grepl(sa1_pattern, code) & nchar(code) == 7 | grepl(sa1_pattern, name)
+}
+
+#' check if area is a regional council
+#' @export
+.matches_region <- function(code, name){
+  grepl("regio", name)
+}
+
+#' check if area is a LB
+#' @export
+.matches_lb <- function(code, name){
+  lb_pattern <- "06\\d{3}($|\\s)"
+  grepl("local board area", name) |
+    grepl(lb_pattern, name)
+}
+
+#' check if area is a CB
+#' @export
+.matches_cb <- function(code, name){
+  cb_pattern <- "\\d{5}($|\\s)"
+  grepl("community", name) |
+    grepl(cb_pattern, name)
+}
+
+#' check if area is a TA
+#' @export
+.matches_ta <- function(code, name){
+  grepl("district|territorial authority|city|territory", name) &
+    !grepl("Other|Inlets|Inland|health board", name) |
+    name == "Auckland" & code != "03"
+}
+
+#' check if area is a TA
+#' @export
+.matches_dhb <- function(code, name){
+
+  dhbs <- c(
+    "Northland", "Waitemata", "Auckland", "Counties Manukau", "Waikato",
+    "Lakes", "Bay of Plenty", "Tairawhiti", "Taranaki", "Hawke's Bay",
+    "Whanganui", "MidCentral", "Hutt Valley", "Capital and Coast",
+    "Wairarapa", "Nelson Marlborough", "West Coast", "Canterbury",
+    "South Canterbury", "Southern", "2201 Otago constituency", "2202 Southland constituency"
+  )
+
+  name %in% dhbs | grepl("district health board|DHB", name)
+}
+
+#' check if area is a subdivision
+#' @export
+.matches_subdivision <- function(code, name){
+  grepl("subdivis", name)
+}
+
+#' check if area is a constituency
+#' @export
+.matches_constituency <- function(code, name){
+  grepl("constituen", name)
+}
+
+#' check if area is a ward
+#' @export
+.matches_ward <- function(code, name){
+  grepl("ward", name)
+}
 
 #' Get area type
 #'
