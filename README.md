@@ -4,7 +4,7 @@
 Helper functions extending the rsdmx package to help interact with the Stats NZ Aotearoa Data Explorer API
 
 ## Getting started
-Install using remotes::install_git("https://gitlab.com/mot-analytics/insights-and-analytics/general/snzapi.git")
+Install using remotes::install_git("https://github.com/eigenvictor/snzapi")
 
 You will need an API key to access the ADE API, you can get one here: https://portal.apis.stats.govt.nz/
 
@@ -38,7 +38,9 @@ get_variable_labels(conn, "age")
 
 conn <- add_filters(conn, sex = c("SEX1", "SEX2"), age = c("AGE1539", "AGE4064"))
 
-data <- collect(conn, add_labels = T, drop_codes = T)
+data <- collect(conn, add_labels = T)
+
+data\$area_type = get_area_type(area_name = data\$area_name, area_code = data$area)
 
 head(data)
 
