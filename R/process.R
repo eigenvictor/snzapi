@@ -60,7 +60,6 @@ get_area_type <- function(
                 "Subdivision", "DHB", "Constituency", "Ward")
 ) {
 
-  options <- tolower(options)
   area_name <- tolower(area_name)
 
   if(is.null(area_code)) area_code <- ""
@@ -94,7 +93,7 @@ get_area_type <- function(
 
 .matches_geo <- function(code, name, geo) {
 
-  match_fun_call <- paste0(".matches_", geo, "(code, name)")
+  match_fun_call <- paste0(".matches_", tolower(geo), "(code, name)")
 
   match_fun_eval <- tryCatch(
     eval(parse(text=match_fun_call)),
