@@ -18,8 +18,9 @@ A data.frame
 Get the codes and respective labels for values a variable can take
 }
 \examples{
+\dontrun{
 conn <- connect_to_ade("POPES_SUB_004")
 age_groups <- get_variable_labels(conn, variable = "age")
 age_groups <- get_variable_values(conn, variable = "age")
-
+}
 }

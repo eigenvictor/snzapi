@@ -17,8 +17,9 @@ add_filter(conn, var, values)
 Filters API query to only return a subset of records
 }
 \examples{
+dontrun{
 conn <- connect_to_ade("POPES_SUB_004")
 conn <- add_filter(conn, var = "sex", values = c("SEX1", "SEX2"))
-
+}
 
 }

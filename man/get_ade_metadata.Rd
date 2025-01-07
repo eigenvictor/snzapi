@@ -17,8 +17,10 @@ A list of data.frame objects containing:
 }
 \description{
 Request certain useful metadata values from the structural metadata API
+Used by connect_to_ade()
 }
 \examples{
-set_api_key(config::get("api_key"))
-
+\dontrun{
+get_ade_metadata("POPES_SUB_004", version = "1.0")
+}
 }

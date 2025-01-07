@@ -14,6 +14,8 @@ This can be found in the data explorer, or using the search_data_series() or get
 Create an S4 object to act as the basis of an API query
 }
 \examples{
+dontrun{
 conn <- connect_to_ade("POPES_SUB_004")
+}
 
 }

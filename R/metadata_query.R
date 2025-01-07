@@ -2,6 +2,7 @@
 #' Get metadata for resource
 #'
 #' Request certain useful metadata values from the structural metadata API
+#' Used by connect_to_ade()
 #'
 #' @returns A list of data.frame objects containing:
 #' - series - descriptors of the data set being queried
@@ -10,8 +11,9 @@
 #'
 #' @param resourceId an API key generated at https://portal.apis.stats.govt.nz/
 #' @examples
-#' set_api_key(config::get("api_key"))
-#'
+#' \dontrun{
+#' get_ade_metadata("POPES_SUB_004", version = "1.0")
+#'}
 #' @export
 get_ade_metadata <- function(resourceId, version) {
   sdmx.dsd <- rsdmx::readSDMX(
@@ -56,11 +58,12 @@ get_ade_metadata <- function(resourceId, version) {
 #'
 #' @param conn A connection to the ADE API, obtained from connect_to_ade()
 #' @examples
+#' \dontrun{
 #' conn <- connect_to_ade("POPES_SUB_004")
 #' series_info <- get_series_metadata(conn)
 #' series_info$Name.en
 #' > "STATSNZ Subnational population estimates (RC, SA2), by age and sex, at 30 June 1996-2024 (2024 boundaries)"
-#'
+#'}
 #' @export
 get_series_metadata <- function(conn) {
   slot(conn, "metadata")$series
@@ -75,10 +78,11 @@ get_series_metadata <- function(conn) {
 #' @param conn A connection to the ADE API, obtained from connect_to_ade()
 #' @param variable The name of a variable in the dataset for which the metadata applies
 #' @examples
+#' \dontrun{
 #' conn <- connect_to_ade("POPES_SUB_004")
 #' age_groups <- get_variable_labels(conn, variable = "age")
 #' age_groups <- get_variable_values(conn, variable = "age")
-#'
+#'}
 #' @export
 get_variable_labels <- function(conn, variable) {
   slot(conn, "metadata")$codelists[[variable]]
@@ -93,10 +97,11 @@ get_variable_labels <- function(conn, variable) {
 #' @param conn A connection to the ADE API, obtained from connect_to_ade()
 #' @param variable The name of a variable in the dataset for which the metadata applies
 #' @examples
+#' \dontrun{
 #' conn <- connect_to_ade("POPES_SUB_004")
 #' age_groups <- get_variable_labels(conn, variable = "age")
 #' age_groups <- get_variable_values(conn, variable = "age")
-#'
+#'}
 #' @export
 get_variable_values <- get_variable_labels
 
@@ -108,9 +113,10 @@ get_variable_values <- get_variable_labels
 #'
 #' @param metadata A metadata table obtained from the get_ade_metadata() function
 #' @examples
-#' metadata <- get_ade_metadata("POPES_SUB_004")
-#' age_groups <- get_variables(metadata)
-#'
+#' \dontrun{
+#' conn <- connect_to_ade("POPES_SUB_004")
+#' age_groups <- get_variables(conn)
+#'}
 #' @export
 get_variables <- function(conn) {
   names(slot(conn, "metadata")$codelists)

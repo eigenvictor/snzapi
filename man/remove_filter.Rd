@@ -15,10 +15,10 @@ remove_filter(conn, var)
 Removes a filter from API query to the ADE
 }
 \examples{
+dontrun{
 conn <- connect_to_ade("POPES_SUB_004")
 conn <- add_filters(conn, sex = c("SEX1", "SEX2"), age = c("AGE1539", "AGE4064"))
 data <- collect(conn)
 conn <- remove_filter(conn, var = "sex")
-
-
+}
 }

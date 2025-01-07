@@ -18,7 +18,9 @@ setClass(
 #' @param resourceId the resourceId for a data series.
 #' This can be found in the data explorer, or using the search_data_series() or get_all_data_series() functions.
 #' @examples
+#' dontrun{
 #' conn <- connect_to_ade("POPES_SUB_004")
+#' }
 #'
 #' @export
 connect_to_ade <- function(resourceId, version = NULL, format = "csv") {
@@ -60,12 +62,12 @@ print.API_conn <- function(conn) {
 #' @param var The name of a variable with a filter currently applied by add_filters()
 #'
 #' @examples
+#' dontrun{
 #' conn <- connect_to_ade("POPES_SUB_004")
 #' conn <- add_filters(conn, sex = c("SEX1", "SEX2"), age = c("AGE1539", "AGE4064"))
 #' data <- collect(conn)
 #' conn <- remove_filter(conn, var = "sex")
-#'
-#'
+#' }
 #' @export
 remove_filter <- function(conn, var) {
   current_filters <- conn@filters
@@ -85,9 +87,10 @@ remove_filter <- function(conn, var) {
 #' @param ... a named list of vectors, where the name is the variable the filter applies to, and the vector contains the filter values
 #'
 #' @examples
+#' dontrun{
 #' conn <- connect_to_ade("POPES_SUB_004")
 #' conn <- add_filters(conn, sex = c("SEX1", "SEX2"), age = c("AGE1539", "AGE4064"))
-#'
+#'}
 #'
 #' @export
 add_filters <- function(conn, ...) {
@@ -109,9 +112,10 @@ add_filters <- function(conn, ...) {
 #' @param var The variable to apply value filters to
 #' @param values A vector of values for var to take
 #' @examples
+#' dontrun{
 #' conn <- connect_to_ade("POPES_SUB_004")
 #' conn <- add_filter(conn, var = "sex", values = c("SEX1", "SEX2"))
-#'
+#'}
 #'
 #' @export
 add_filter <- function(conn, var, values) {

@@ -16,7 +16,8 @@ A character vector of variable names
 List variables available in a data series
 }
 \examples{
-metadata <- get_ade_metadata("POPES_SUB_004")
-age_groups <- get_variables(metadata)
-
+\dontrun{
+conn <- connect_to_ade("POPES_SUB_004")
+age_groups <- get_variables(conn)
+}
 }

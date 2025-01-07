@@ -13,9 +13,10 @@ get_series_metadata(conn)
 Get the name, description, and other info about the series for the connection object
 }
 \examples{
+\dontrun{
 conn <- connect_to_ade("POPES_SUB_004")
 series_info <- get_series_metadata(conn)
 series_info$Name.en
 > "STATSNZ Subnational population estimates (RC, SA2), by age and sex, at 30 June 1996-2024 (2024 boundaries)"
-
+}
 }
