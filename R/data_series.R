@@ -79,7 +79,7 @@ get_all_data_series <- function(){
     return(status)
   })
 
-  ns <- rsdmx::namespaces.SDMX(xmlObj)
+  ns <- rsdmx:::namespaces.SDMX(xmlObj)
 
   struct_obj <- rsdmx::SDMXDataFlows(xmlObj, ns)
 
