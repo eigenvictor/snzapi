@@ -203,5 +203,9 @@ collect.API_conn <- function(conn, add_labels = F, drop_codes = F) {
 #'
 #' @export
 collect <- function(x, ...) {
-  UseMethod("collect")
+  if (requireNamespace("dplyr", quietly = TRUE)) {
+    dplyr::collect(x, ...)
+  } else {
+    UseMethod("collect")
+  }
 }
