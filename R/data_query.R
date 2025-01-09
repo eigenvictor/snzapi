@@ -168,7 +168,7 @@ build_filter_string <- function(conn) {
 #'
 #' @returns A data.table object
 #'
-#' @export
+#' @exportS3Method dplyr::collect
 collect.API_conn <- function(conn, add_labels = F, drop_codes = F) {
   url <- sprintf(
     "%s/%s?dimensionAtObservation=AllDimensions&format=%s",
