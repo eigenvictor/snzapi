@@ -82,9 +82,12 @@ get_area_type <- function(
 
   unique_pairs$type <- mapply(FUN = .get_area_type, code = unique_pairs$code, name = unique_pairs$name)
 
-  code_name_types <- code_name_pairs
-
-  data.table::setDT(code_name_types)[unique_pairs, on = c("code", "name"), type := i.type]
+  code_name_types <- plyr::join(
+    x = code_name_pairs,
+    y = unique_pairs,
+    by = c("code", "name"),
+    type = "left"
+  )
 
   return(code_name_types$type)
 }
