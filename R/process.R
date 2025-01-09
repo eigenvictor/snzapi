@@ -82,11 +82,9 @@ get_area_type <- function(
 
   unique_pairs$type <- mapply(FUN = .get_area_type, code = unique_pairs$code, name = unique_pairs$name)
 
-  code_name_types <- merge(
-    code_name_pairs,
-    unique_pairs,
-    by = c("code", "name")
-  )
+  code_name_types <- code_name_pairs
+
+  data.table::setDT(code_name_types)[unique_pairs, on = c("code", "name"), type := i.type]
 
   return(code_name_types$type)
 }
