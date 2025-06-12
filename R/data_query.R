@@ -184,7 +184,7 @@ collect.API_conn <- function(conn, add_labels = F, drop_codes = F) {
       httr::GET(url, httr::add_headers(headers)),
       as = "text"
     )
-    data.table::fread(res, header = T)
+    data.table::fread(res, header = T, keepLeadingZeros = T)
   }
 
   names(data) <- clean_ade_names(

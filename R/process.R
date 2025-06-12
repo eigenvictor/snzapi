@@ -121,7 +121,7 @@ get_area_type <- function(
 #' check if area is a regional council
 #' @export
 .matches_region <- function(code, name){
-  grepl("regio", name)
+  grepl("regio", name) | code == "02" & grepl("auckland", name)
 }
 
 #' check if area is a LB
@@ -144,8 +144,8 @@ get_area_type <- function(
 #' @export
 .matches_ta <- function(code, name){
   grepl("district|territorial authority|city|territory", name) &
-    !grepl("Other|Inlets|Inland|health board", name) |
-    name == "Auckland" & code != "03"
+    !grepl("other|inlets|inland|health board", name) |
+    name == "auckland" & code == "076"
 }
 
 #' check if area is a TA
@@ -160,7 +160,7 @@ get_area_type <- function(
     "South Canterbury", "Southern", "2201 Otago constituency", "2202 Southland constituency"
   )
 
-  name %in% dhbs | grepl("district health board|DHB", name)
+  name %in% tolower(dhbs) | grepl("district health board|DHB", name)
 }
 
 #' check if area is a subdivision
