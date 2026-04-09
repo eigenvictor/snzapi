@@ -7,11 +7,16 @@ Maintainer: Jayden Mudge <jaydenmudge@gmail.com>
 Description: Query the Stats NZ Aotearoa Data Explorer API
     A collection of functions to help users query the Stats NZ API
     Built upon the rsdmx package created by Emmanuel Blondel, Matthieu Stigler, and Eric Persson
-Imports: rsdmx, data.table, plyr
+Imports: 
+    rsdmx,
+    data.table,
+    plyr,
+    lifecycle
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.3.2
+RoxygenNote: 7.3.3
 Suggests: 
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
+Roxygen: list(markdown = TRUE)

@@ -2,8 +2,9 @@
 
 #' Clean API variable names
 #'
+#' @description
 #' The Aotearoa Data Explorer refers to all variable metadata with names of the form
-#' <prefix>_<variable_name>_<series_name>. This function extracts that core <variable_name>
+#' \code{<prefix>_<variable_name>_<series_name>}. This function extracts that core <variable_name>
 #' value and returns it in lower case.
 #'
 #' @param text a vector of strings to clean
@@ -33,6 +34,9 @@ clean_ade_names <- function(text, resourceId, var_type = "id") {
 }
 
 #' Get area type
+#' 
+#' @description
+#' `r lifecycle::badge("experimental")`
 #'
 #' Some published series include multiple area types in the same "area" column.
 #' This helper function aims to assign, as best as it can, the relevant area type.
@@ -44,6 +48,7 @@ clean_ade_names <- function(text, resourceId, var_type = "id") {
 #' - SA2s need either their code included in the area_name, or need their code provided
 #' - Totals and areas outside common geographies are often mislabeled
 #' - Doesn't work for Urban-Rural areas
+#' - If Stats NZ modify their internal names and values for geographies, it will cause issues
 #'
 #' @param area_name a character string containing a label/name for an area concept
 #' @param area_code (optional) the numeric code for an area to help improve classification accuracy

@@ -11,9 +11,11 @@ get_ade_metadata(resourceId, version)
 }
 \value{
 A list of data.frame objects containing:
-- series - descriptors of the data set being queried
-- concepts - metadata on the variables included in the data
-- codelists - the values each variable can take, and a textual name for them
+\itemize{
+\item series - descriptors of the data set being queried
+\item concepts - metadata on the variables included in the data
+\item codelists - the values each variable can take, and a textual name for them
+}
 }
 \description{
 Request certain useful metadata values from the structural metadata API

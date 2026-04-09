@@ -15,7 +15,7 @@ clean_ade_names(text, resourceId, var_type = "id")
 }
 \description{
 The Aotearoa Data Explorer refers to all variable metadata with names of the form
-<prefix>_<variable_name>_<series_name>. This function extracts that core <variable_name>
+\code{<prefix>_<variable_name>_<series_name>}. This function extracts that core <variable_name>
 value and returns it in lower case.
 }
 \examples{

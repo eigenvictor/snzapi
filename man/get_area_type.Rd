@@ -19,17 +19,21 @@ get_area_type(
 \item{options}{(optional) possible options of types for the area}
 }
 \description{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
 Some published series include multiple area types in the same "area" column.
 This helper function aims to assign, as best as it can, the relevant area type.
 If you are querying a table with only one area type, you are best to set the area
 type manually.
-}
-\details{
+
 Known issues:
-- If no code is provided, Auckland is assigned TA, although it may be a DHB
-- SA2s need either their code included in the area_name, or need their code provided
-- Totals and areas outside common geographies are often mislabeled
-- Doesn't work for Urban-Rural areas
+\itemize{
+\item If no code is provided, Auckland is assigned TA, although it may be a DHB
+\item SA2s need either their code included in the area_name, or need their code provided
+\item Totals and areas outside common geographies are often mislabeled
+\item Doesn't work for Urban-Rural areas
+\item If Stats NZ modify their internal names and values for geographies, it will cause issues
+}
 }
 \examples{
 get_area_type("Gisborne district")
