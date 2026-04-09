@@ -172,7 +172,8 @@ add_ade_value_labels <- function(.data, conn, drop_codes = F) {
   return(.data)
 }
 
-#' @export
+#' @export as.data.frame.SDMXCodelist
+#' @exportS3Method
 as.data.frame.SDMXCodelist <- function (x, ...)
 {
   out <- do.call("rbind", lapply(x@Code, function(cl) {

@@ -49,7 +49,8 @@ connect_to_ade <- function(resourceId, version = NULL, format = "csv") {
 #' Prints the name of the series of an API_conn object
 #'
 #' @param conn A connection to the ADE API, obtained from connect_to_ade()
-#' @export
+#' @export print.API_conn
+#' @exportS3Method
 print.API_conn <- function(conn) {
   print(conn@resourceId)
 }
@@ -168,6 +169,7 @@ build_filter_string <- function(conn) {
 #'
 #' @returns A data.table object
 #'
+#' @export collect.API_conn
 #' @exportS3Method dplyr::collect
 collect.API_conn <- function(conn, add_labels = F, drop_codes = F) {
   url <- sprintf(

@@ -9,7 +9,7 @@
 library(testthat)
 library(snzapi)
 
-set_api_key(config::get("stats_nz_key"))
+set_api_key(config::get("snz_key"))
 test_dir("tests/testthat")
 
 #
