@@ -15,40 +15,61 @@
 #' get_ade_metadata("POPES_SUB_004", version = "1.0")
 #'}
 #' @export
-get_ade_metadata <- function(resourceId, version) {
-  sdmx.dsd <- rsdmx::readSDMX(
+get_ade_metadata <- function(resourceId, version, providerId) {
+  flow <- rsdmx::readSDMX(
     resourceId = resourceId,
     version = version,
-    providerId = "STATSNZ",
+    providerId = providerId,
+    resource = "dataflow",
+    headers = get_ade_query_header()
+  )
+  
+  dsd_id <- slot(flow@dataflows[[1]], "dsdRef")
+  
+  sdmx.dsd <- rsdmx::readSDMX(
+    resourceId = dsd_id,
+    version = version,
+    providerId = providerId,
     resource = "datastructure",
     dsd = T,
     headers = get_ade_query_header()
   )
-
-  series_metadata <- as.data.frame(sdmx.dsd@datastructures)
+  
+  series_metadata <- as.data.frame(sdmx.dsd@datastructures)  
+  
+  dimensions <- sdmx.dsd@datastructures@datastructures[[1]]@Components@Dimensions
+  
+  dimensions <- sapply(
+    X = dimensions,
+    FUN = \(x) slot(x, 'codelist')
+  )
 
   concept_metadata <- as.data.frame(sdmx.dsd@concepts, conceptSchemeId = paste0("CONCEPT_", resourceId))
   concept_metadata$full_name = concept_metadata$name
   concept_metadata$name <- clean_ade_names(concept_metadata$id, resourceId = resourceId)
-
+  
+  concept_metadata <- concept_metadata[which(concept_metadata$coreRepresentation %in% dimensions),]
+  
   codelists <- slot(slot(sdmx.dsd, "codelists"), "codelists")
-
+  
   codelist_names <- sapply(codelists, function(x) slot(x, "id"))
   codelist_names <- clean_ade_names(codelist_names, resourceId = resourceId, var_type = "codelist")
-
+  
   codelist_metadata <- lapply(
     X = codelists,
     FUN = as.data.frame
   )
-
+  
   names(codelist_metadata) <- codelist_names
-
+  
+  codelist_metadata <- codelist_metadata[tolower(dimensions)]
+  
   metadata <- list(
     series = series_metadata,
     concepts = concept_metadata,
     codelists = codelist_metadata
   )
-
+  
   return(metadata)
 }
 
@@ -135,40 +156,40 @@ get_variables <- function(conn) {
 #'
 #' @export
 add_ade_value_labels <- function(.data, conn, drop_codes = F) {
-
+  
   codelists <- conn@metadata$codelists
-
+  
   vars <- names(codelists)
-
+  
   for(var in vars) {
-
+    
     labels <- codelists[[var]]
-
+    
     names(labels) <- c(var, paste0(var, "_name"))
-
+    
     type_var = typeof(.data[[var]])
     type_code = typeof(labels[[var]])
-
+    
     if(type_var != type_code) labels[[var]] <- as(labels[[var]], type_var)
-
+    
     .data <- merge(
       .data, labels,
       by = var,
       all.x = T,
       all.y = F
     )
-
+    
     names_keep <- names(.data)
-
+    
     if(drop_codes) {
       names_keep <- names_keep[names_keep != var]
       .data <- .data[,names_keep]
-
+      
       names(.data) <- gsub("_name", "", names(.data))
     }
-
+    
   }
-
+  
   return(.data)
 }
 

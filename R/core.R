@@ -1,7 +1,31 @@
 
 .api_env <- rlang::env(
+  environment = "prod",
   api_key = NULL
 )
+
+#' Set API environment
+#' 
+#' API environment variable to determine which API endpoint to use
+#'
+#' @param environment prod or alpha
+#' @examples
+#' set_environment("alpha")
+#'
+#' @export
+set_api_environment <- function(environment) {
+  assign("environment", environment, .api_env)
+}
+
+#' Get API environment
+#'
+#' Returns the current API environment
+#'
+#' @export
+get_api_environment <- function() {
+  .api_env$environment
+}
+
 
 #' Store API key for use in queries
 #'

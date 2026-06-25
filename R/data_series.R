@@ -15,6 +15,18 @@ search_data_series <- function(text, perl = F) {
   data_series[grepl(text, data_series$name, ignore.case = T, perl = perl),]
 }
 
+get_providerId <- function() {
+  providerId = if (get_api_environment()=="prod") {
+    "STATSNZ"
+  } else if (get_api_environment()=="alpha") {
+    "STATSNZ.ECIN"
+  } else {
+    stop(paste("Unknown API environment:", get_api_environment()))
+  }
+  
+  return(providerId)
+}
+
 #' Get all data series
 #'
 #' Searches the titles of all published datasets in the ADE and returns a data frame
@@ -22,8 +34,12 @@ search_data_series <- function(text, perl = F) {
 #'
 #' @export
 get_all_data_series <- function(){
-
-  provider = rsdmx::findSDMXServiceProvider("STATSNZ")
+  
+  providerId = get_providerId()
+  
+  agencyId = providerId
+  
+  provider = rsdmx::findSDMXServiceProvider(providerId)
 
   rsdmxAgent <- paste("rsdmx/", as.character(packageVersion("rsdmx")),
                       sep = "")
@@ -31,7 +47,7 @@ get_all_data_series <- function(){
   requestParams <- rsdmx::SDMXRequestParams(
     regUrl = provider@builder@regUrl,
     repoUrl = provider@builder@repoUrl, accessKey = NULL,
-    providerId = "STATSNZ", agencyId = "STATSNZ", resource = "dataflow",
+    providerId = providerId, agencyId = agencyId, resource = "dataflow",
     resourceId = NULL, version = NULL, flowRef = NULL,
     key = NULL, start = NULL, end = NULL, compliant = provider@builder@compliant
     )

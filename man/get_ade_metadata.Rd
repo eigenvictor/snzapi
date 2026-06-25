@@ -4,7 +4,7 @@
 \alias{get_ade_metadata}
 \title{Get metadata for resource}
 \usage{
-get_ade_metadata(resourceId, version)
+get_ade_metadata(resourceId, version, providerId)
 }
 \arguments{
 \item{resourceId}{an API key generated at https://portal.apis.stats.govt.nz/}

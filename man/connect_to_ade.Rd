@@ -4,11 +4,13 @@
 \alias{connect_to_ade}
 \title{Set up connection to a data series in the ADE}
 \usage{
-connect_to_ade(resourceId, version = NULL, format = "csv")
+connect_to_ade(resourceId, uri = NULL, version = NULL, format = "csv")
 }
 \arguments{
 \item{resourceId}{the resourceId for a data series.
 This can be found in the data explorer, or using the search_data_series() or get_all_data_series() functions.}
+
+\item{uri}{can be used to override API URI, otherwise default is inferred from API environment}
 }
 \description{
 Create an S4 object to act as the basis of an API query

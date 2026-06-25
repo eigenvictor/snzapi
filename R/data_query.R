@@ -17,19 +17,22 @@ setClass(
 #'
 #' @param resourceId the resourceId for a data series.
 #' This can be found in the data explorer, or using the search_data_series() or get_all_data_series() functions.
+#' @param uri can be used to override API URI, otherwise default is inferred from API environment
 #' @examples
 #' dontrun{
 #' conn <- connect_to_ade("POPES_SUB_004")
 #' }
 #'
 #' @export
-connect_to_ade <- function(resourceId, version = NULL, format = "csv") {
+connect_to_ade <- function(resourceId, uri = NULL, version = NULL, format = "csv") {
 
   if(!format %in% c("xml", "csv")) stop(sprintf("Format %s not currently accepted, please use xml or csv", format))
 
   conn <- new("API_conn", resourceId = resourceId, format = format)
+  
+  providerId = get_providerId()
 
-  conn@metadata = get_ade_metadata(resourceId, version)
+  conn@metadata = get_ade_metadata(resourceId, version, providerId = providerId)
 
   conn@version = conn@metadata$series$version
 
@@ -37,8 +40,17 @@ connect_to_ade <- function(resourceId, version = NULL, format = "csv") {
 
   conn@filters = as.list(rep("", length(vars)))
   names(conn@filters) = vars
+  
+  if(is.null(uri)) {
+    base_uri = if (providerId=="STATSNZ.ECIN") {
+      "https://api-alpha.data.stats.govt.nz/rest/data/"
+    } else {
+      "https://api.data.stats.govt.nz/rest/data/"
+    }
+    uri = paste0(base_uri, providerId)
+  }
 
-  conn@url = paste(c("https://api.data.stats.govt.nz/rest/data/STATSNZ", resourceId, conn@version), collapse = ",")
+  conn@url = paste(c(uri, resourceId, conn@version), collapse = ",")
 
   return(conn)
 }
@@ -148,10 +160,11 @@ add_filter <- function(conn, var, values) {
 #'
 #' @export
 build_filter_string <- function(conn) {
-  coordinate_order <- conn@metadata$concepts$name
-  coordinate_order <- coordinate_order[1:(length(coordinate_order)-1)]
+  coordinate_order <- names(conn@metadata$codelists)
 
   filters <- conn@filters[coordinate_order]
+  
+  filters <- setdiff(filters, 'cl_obs"status')
 
   filters <- sapply(X=filters, FUN = \(x) paste0(x, collapse = "+"))
   filter_string <- paste(filters, collapse = ".")
@@ -183,7 +196,7 @@ collect.API_conn <- function(conn, add_labels = F, drop_codes = F) {
     as.data.frame(rsdmx::readSDMX(url, headers = headers))
   } else if(conn@format == "csv") {
     res <- httr::content(
-      httr::GET(url, httr::add_headers(headers)),
+      httr::GET(url, httr::add_headers(headers), encoding = "UTF-8"),
       as = "text"
     )
     data.table::fread(res, header = T, keepLeadingZeros = T)

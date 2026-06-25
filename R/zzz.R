@@ -1,5 +1,5 @@
 .onLoad <- function(libname, pkgname) {
-
+  
   .snz_provider <-
     rsdmx::SDMXServiceProvider(
       agencyId = "STATSNZ",
@@ -12,7 +12,21 @@
         compliant = FALSE
       )
     )
-
+  
+  .snz_alpha_provider <-
+    rsdmx::SDMXServiceProvider(
+      agencyId = "STATSNZ.ECIN",
+      name = "Statistics New Zealand",
+      scale = "national",
+      country = "NZ",
+      builder = rsdmx::SDMXREST21RequestBuilder(
+        regUrl = "https://api-alpha.data.stats.govt.nz/rest",
+        repoUrl = "https://api-alpha.data.stats.govt.nz/rest",
+        compliant = FALSE
+      )
+    )
+  
   rsdmx::addSDMXServiceProvider(.snz_provider)
+  rsdmx::addSDMXServiceProvider(.snz_alpha_provider)
 
 }
